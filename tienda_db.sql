@@ -1,3 +1,67 @@
+-- Tabla employee
+CREATE TABLE employee (
+    employee_id SERIAL PRIMARY KEY,
+    last_name VARCHAR(40) NOT NULL,
+    first_name VARCHAR(20) NOT NULL,
+    birth_date DATE,
+    hire_date DATE,
+    address VARCHAR(120),
+    city VARCHAR(30),
+    country VARCHAR(30),
+    reports_to INTEGER REFERENCES employee(employee_id)
+);
+
+-- Tabla customer
+CREATE TABLE customer (
+    customer_id SERIAL PRIMARY KEY,
+    contact_name VARCHAR(30) NOT NULL,
+    company_name VARCHAR(40),
+    contact_email VARCHAR(128),
+    address VARCHAR(120),
+    city VARCHAR(30),
+    country VARCHAR(30)
+);
+
+-- Tabla category
+CREATE TABLE category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(60) NOT NULL,
+    description TEXT,
+    parent_category_id INTEGER REFERENCES category(category_id)
+);
+
+-- Tabla product
+CREATE TABLE product (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(40) NOT NULL,
+    category_id INTEGER REFERENCES category(category_id),
+    quantity_per_unit INTEGER,
+    unit_price DECIMAL(10,2),
+    units_in_stock INTEGER,
+    discontinued BOOLEAN DEFAULT FALSE
+);
+
+-- Tabla purchase
+CREATE TABLE purchase (
+    purchase_id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customer(customer_id),
+    employee_id INTEGER REFERENCES employee(employee_id),
+    total_price DECIMAL(10,2),
+    purchase_date TIMESTAMP,
+    shipped_date TIMESTAMP,
+    ship_address VARCHAR(60),
+    ship_city VARCHAR(15),
+    ship_country VARCHAR(15)
+);
+
+-- Tabla purchase_item
+CREATE TABLE purchase_item (
+    purchase_id INTEGER REFERENCES purchase(purchase_id),
+    product_id INTEGER REFERENCES product(product_id),
+    unit_price DECIMAL(10,2),
+    quantity INTEGER,
+    PRIMARY KEY (purchase_id, product_id)
+);
 -- Insertar empleados
 INSERT INTO employee (last_name, first_name, birth_date, hire_date, address, city, country, reports_to) VALUES
 ('García', 'Juan', '1985-05-15', '2020-01-15', 'Calle 123 #45-67', 'Bogotá', 'Colombia', NULL),
